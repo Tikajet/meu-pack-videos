@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pack de Vídeos Premium | Acesso Exclusivo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gold-text { color: #d4af37; }
+        .gold-border { border-color: #d4af37; }
+        .btn-gold { background: linear-gradient(135deg, #d4af37 0%, #aa8c00 100%); }
+    </style>
+</head>
+<body class="bg-black text-white font-sans antialiased">
+
+    <div class="min-h-screen flex flex-col items-center justify-center p-6 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-900 to-black">
+        
+        <div class="bg-red-900 border border-red-500 text-red-200 py-1 px-4 rounded-full text-xs font-bold uppercase tracking-widest mb-6 animate-pulse">
+            Oferta por tempo limitado
+        </div>
+
+        <h1 class="text-4xl md:text-5xl font-black mb-2 text-white text-center">
+            PACK DE VÍDEOS <span class="gold-text">PREMIUM</span>
+        </h1>
+        
+        <p class="text-gray-400 mb-8 text-center max-w-sm">
+            Tenha acesso imediato a nossa biblioteca exclusiva de vídeos em alta resolução.
+        </p>
+
+        <div class="text-center mb-8 bg-gray-900/50 p-6 rounded-2xl border gold-border border-opacity-30">
+            <p class="text-lg text-gray-500 line-through mb-1">De: R$ 129,90</p>
+            <p class="text-6xl font-black text-white tracking-tighter">POR: R$ 19,90</p>
+            <p class="gold-text font-bold mt-2 text-sm uppercase tracking-widest">Pagamento via PIX instantâneo</p>
+        </div>
+
+        <div class="w-full max-w-sm">
+            <form action="/comprar" method="POST" class="flex flex-col gap-4">
+                <input type="email" name="email" required placeholder="Digite seu e-mail de acesso" 
+                       class="w-full p-4 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-yellow-600 outline-none transition">
+                
+                <button type="submit" 
+                        class="w-full btn-gold hover:opacity-90 text-black font-black py-4 rounded-xl text-lg transition duration-300 transform hover:scale-105 shadow-[0_0_20px_rgba(212,175,55,0.3)]">
+                    GARANTIR MEU ACESSO AGORA
+                </button>
+            </form>
+        </div>
+
+        <div class="mt-12 flex gap-8 text-gray-600 text-xs">
+            <div class="flex items-center gap-1">🔒 100% Seguro</div>
+            <div class="flex items-center gap-1">⚡ Entrega Automática</div>
+        </div>
+
+    </div>
+</body>
+</html>
