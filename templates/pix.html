@@ -1,53 +1,105 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pagamento PIX | Finalize seu Acesso</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Pagamento via PIX - Easy Pack Video</title>
     <style>
-        .gold-border { border: 1px solid #d4af37; }
-        .gold-glow { box-shadow: 0 0 20px rgba(212, 175, 55, 0.2); }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0b0f19;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #111827;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        h2 { color: #10b981; margin-bottom: 20px; }
+        .qr-code { width: 200px; height: 200px; margin: 20px auto; background-color: white; padding: 10px; border-radius: 8px; }
+        .qr-code img { width: 100%; height: 100%; }
+        .input-copia {
+            width: 90%; padding: 10px; border-radius: 6px; border: 1px solid #374151;
+            background-color: #1f2937; color: white; text-align: center; margin-bottom: 15px;
+        }
+        .btn {
+            background-color: #10b981; color: white; border: none; padding: 12px 20px;
+            font-size: 16px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold;
+        }
+        .btn:hover { background-color: #059669; }
+        
+        /* Tela de Sucesso Escondida inicialmente */
+        #tela-sucesso { display: none; }
+        .sucesso-icon { font-size: 50px; color: #10b981; margin-bottom: 15px; }
     </style>
 </head>
-<body class="bg-black text-white font-sans antialiased">
+<body>
 
-    <div class="min-h-screen flex flex-col items-center justify-center p-6 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-900 to-black">
+    <div class="container" id="tela-pix">
+        <h2>Quase lá! Pague com o PIX</h2>
+        <p>Abra o aplicativo do seu banco e escaneie o código abaixo:</p>
         
-        <div class="bg-gray-900 p-8 rounded-3xl gold-border gold-glow text-center max-w-sm w-full border-opacity-30">
-            
-            <h1 class="text-2xl font-black mb-2 text-white">QUASE LÁ!</h1>
-            <p class="text-gray-400 mb-8 text-sm">Escaneie o código abaixo para liberar seu acesso instantaneamente.</p>
-            
-            <div class="flex justify-center mb-8 bg-white p-4 rounded-2xl">
-                <img src="data:image/jpeg;base64,{{ qr_code_base64 }}" alt="QR Code PIX" class="w-48 h-48">
-            </div>
-            
-            <p class="text-xs text-gray-500 mb-2 uppercase tracking-widest font-bold">Pix Copia e Cola</p>
-            
-            <div class="relative">
-                <textarea readonly id="pixCode" 
-                          class="w-full p-4 text-xs bg-black border border-gray-800 rounded-xl text-gray-300 font-mono mb-4 focus:outline-none" 
-                          rows="3">{{ copia_cola }}</textarea>
-                
-                <button onclick="copiarPix()" 
-                        class="w-full bg-gray-800 hover:bg-gray-700 py-2 rounded-lg text-xs font-bold transition">
-                    CLIQUE PARA COPIAR
-                </button>
-            </div>
-
-            <p class="text-[10px] text-gray-600 mt-6">O acesso será enviado automaticamente para seu e-mail após a confirmação.</p>
+        <div class="qr-code">
+            <img src="data:image/png;base64,{{ qr_code_base64 }}" alt="QR Code PIX">
         </div>
+        
+        <p>Ou copie e cole o código abaixo:</p>
+        <input type="text" class="input-copia" value="{{ copia_cola }}" id="pixCode" readonly>
+        <button class="btn" onclick="copiarPix()">Copiar Código PIX</button>
+        <p style="font-size: 12px; color: #9ca3af; margin-top: 15px;">Aguardando aprovação do pagamento...</p>
+    </div>
 
+    <div class="container" id="tela-sucesso">
+        <div class="sucesso-icon">✓</div>
+        <h2>Pagamento Confirmado!</h2>
+        <p style="font-size: 16px; line-height: 1.5;">
+            Obrigado pela sua compra! O seu acesso ao <strong>Pack de Vídeos Premium</strong> foi liberado.<br><br>
+            As instruções de acesso e o link do Google Drive foram enviados para o <strong>e-mail cadastrado</strong> no momento da compra.
+        </p>
+        <p style="font-size: 13px; color: #9ca3af; margin-top: 20px;">
+            Verifique também a sua caixa de <em>Spam</em> ou <em>Lixo Eletrônico</em>.
+        </p>
     </div>
 
     <script>
         function copiarPix() {
-            const copyText = document.getElementById("pixCode");
+            var copyText = document.getElementById("pixCode");
             copyText.select();
-            document.execCommand("copy");
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
             alert("Código PIX copiado com sucesso!");
         }
+
+        // Sistema de checagem automática de status em tempo real
+        const paymentId = "{{ payment_id }}";
+        
+        function checarPagamento() {
+            if (!paymentId) return;
+            
+            fetch(`/status/${paymentId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'approved') {
+                        // Esconde o bloco do PIX e mostra a tela de sucesso
+                        document.getElementById('tela-pix').style.display = 'none';
+                        document.getElementById('tela-sucesso').style.display = 'block';
+                        clearInterval(intervalo); // Para de consultar o servidor
+                    }
+                })
+                .catch(err => console.error("Erro ao verificar status:", err));
+        }
+
+        // Executa a checagem a cada 3 segundos
+        const intervalo = setInterval(checarPagamento, 3000);
     </script>
 </body>
 </html>
